@@ -1,0 +1,18 @@
+# Ignore WordPress core files
+/wp-admin/
+/wp-includes/
+/*.php
+/xmlrpc.php
+/wp-config-sample.php
+
+# Ignore configuration and backups
+wp-config.php
+*.log
+*.zip
+*.tar.gz
+
+# Ignore default themes and standard uploads
+/wp-content/themes/twentytwenty*/
+/wp-content/uploads/
+/wp-content/upgrade/
+/wp-content/plugins/index.php
