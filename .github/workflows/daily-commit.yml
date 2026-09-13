@@ -1,16 +1,18 @@
-
-name: Daily Auto Commit
+name: Dynamic Auto Commit
 
 on:
   schedule:
-    # This runs the script every day at 12:00 AM UTC (Change to your preferred time)
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Allows you to manually trigger it for testing
+    # 1. High frequency: Every hour on Sundays (0-23 UTC)
+    - cron: '0 * * * 0'
+    
+    # 2. Low frequency: Once a day (at 12:00 AM UTC) from Monday to Saturday
+    - cron: '0 0 * * 1-6'
+    
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -22,7 +24,7 @@ jobs:
     - name: Commit and Push changes
       run: |
         git config --global user.name "github-actions[bot]"
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --global user.email "41898282+github-actions[bot]@://github.com"
         git add README.md
-        git commit -m "Automated daily update: $(date)"
+        git commit -m "Automated update: $(date)"
         git push
