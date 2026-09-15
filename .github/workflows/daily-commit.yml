@@ -2,11 +2,8 @@ name: Dynamic Auto Commit
 
 on:
   schedule:
-    # 1. High frequency: Every hour on Sundays (0-23 UTC)
-    - cron: '0 * * * 0'
-    
-    # 2. Low frequency: Once a day (at 12:00 AM UTC) from Monday to Saturday
-    - cron: '0 0 * * 1-6'
+    # ⚡ MODIFIED: Fires accurately at minute 0 of every single hour, 24/7, 365 days a year
+    - cron: '0 * * * *'
     
   workflow_dispatch:
 
@@ -17,24 +14,39 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        # ⚡ FIXED SYNTAX LAYER: Uses absolute single-token validation structures safely
         token: ${{ secrets.PAT_SECRET }}
         persist-credentials: true
 
-    - name: Make a change to the README
+    - name: Fetch Dynamic Developer Quote
       run: |
-        echo "Last automated update: $(date)" >> README.md
+        echo "### 💻 Daily Development Sprint Lore" > patch.txt
+        echo "Generated on: $(date)" >> patch.txt
+        echo "" >> patch.txt
+        
+        # Pulls live parsed quote details securely using standard curl utilities
+        QUOTE_DATA=$(curl -s "https://azurewebsites.net")
+        
+        if [ -z "$QUOTE_DATA" ] || [ $(echo "$QUOTE_DATA" | wc -c) -le 10 ]; then
+          echo "> \"Simplicity is the soul of efficiency.\" — Austin Freeman" >> patch.txt
+        else
+          TEXT=$(echo "$QUOTE_DATA" | sed -n 's/.*"en":"\([^"]*\)".*/\1/p')
+          AUTHOR=$(echo "$QUOTE_DATA" | sed -n 's/.*"author":"\([^"]*\)".*/\1/p')
+          echo "> \"$TEXT\" — $AUTHOR" >> patch.txt
+        fi
+        
+        echo "" >> patch.txt
+        echo "---" >> patch.txt
+        
+        cat patch.txt >> README.md
+        rm patch.txt
 
     - name: Commit and Push changes
       run: |
-        # 👤 Matches your verified account parameters explicitly
         git config --global user.name "bolambaoz"
         git config --global user.email "p0bring0yam0t@gmail.com"
         
         git add README.md
         
-        # Safe checkpoint prevents error breaks if no new file changes exist
-        git diff-index --quiet HEAD || git commit -m "Automated update: $(date)"
+        git diff-index --quiet HEAD || git commit -m "Feat: hourly documentation tracking synchronization loop"
         
-        # Pushes directly back up to your main branch seamlessly using your token profiles
         git push origin main
