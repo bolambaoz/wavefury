@@ -17,8 +17,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        # ⚡ CRITICAL FIX: Forces the checkout routine to use your personal credentials instead of the bot token
-        token: ${{ secrets::PAT_SECRET || secrets.PAT_SECRET }}
+        # ⚡ FIXED SYNTAX LAYER: Uses absolute single-token validation structures safely
+        token: ${{ secrets.PAT_SECRET }}
         persist-credentials: true
 
     - name: Make a change to the README
@@ -27,12 +27,14 @@ jobs:
 
     - name: Commit and Push changes
       run: |
-        git config --global user.name "Zee"
+        # 👤 Matches your verified account parameters explicitly
+        git config --global user.name "bolambaoz"
         git config --global user.email "p0bring0yam0t@gmail.com"
+        
         git add README.md
         
-        # Safe check logic block ensures git only commits if an actual layout shift difference exists
+        # Safe checkpoint prevents error breaks if no new file changes exist
         git diff-index --quiet HEAD || git commit -m "Automated update: $(date)"
         
-        # Clean hard push utilizing your authenticated remote destination credentials loop tracks
-        git push origin HEAD:${{ github.ref }}
+        # Pushes directly back up to your main branch seamlessly using your token profiles
+        git push origin main
