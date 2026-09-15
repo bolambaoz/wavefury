@@ -16,6 +16,10 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        # ⚡ CRITICAL FIX: Forces the checkout routine to use your personal credentials instead of the bot token
+        token: ${{ secrets::PAT_SECRET || secrets.PAT_SECRET }}
+        persist-credentials: true
 
     - name: Make a change to the README
       run: |
@@ -26,5 +30,9 @@ jobs:
         git config --global user.name "Zee"
         git config --global user.email "p0bring0yam0t@gmail.com"
         git add README.md
-        git commit -m "Automated update: $(date)"
-        git push
+        
+        # Safe check logic block ensures git only commits if an actual layout shift difference exists
+        git diff-index --quiet HEAD || git commit -m "Automated update: $(date)"
+        
+        # Clean hard push utilizing your authenticated remote destination credentials loop tracks
+        git push origin HEAD:${{ github.ref }}
