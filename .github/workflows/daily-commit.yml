@@ -1,10 +1,6 @@
 name: Dynamic Auto Commit
 
 on:
-  # ⚡ WEAPON OF CHOICE: Listens for incoming secure external webhook triggers instead of internal cron schedules
-  repository_dispatch:
-    types: [hourly_sync_trigger]
-    
   workflow_dispatch:
 
 jobs:
