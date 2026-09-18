@@ -1,9 +1,9 @@
 name: Dynamic Auto Commit
 
 on:
-  schedule:
-    # Fires accurately at minute 0 of every single hour, 24/7
-    - cron: '0 * * * *'
+  # ⚡ WEAPON OF CHOICE: Listens for incoming secure external webhook triggers instead of internal cron schedules
+  repository_dispatch:
+    types: [hourly_sync_trigger]
     
   workflow_dispatch:
 
@@ -17,48 +17,41 @@ jobs:
         token: ${{ secrets.PAT_SECRET }}
         persist-credentials: true
 
-    # ⚡ MODIFIED STEP: Generates a premium tech quote completely locally
     - name: Generate Local Tech Quote
       run: |
         echo "### 💻 Daily Development Sprint Lore" > patch.txt
         echo "Generated on: $(date)" >> patch.txt
         echo "" >> patch.txt
         
-        # 📚 Isolated array dictionary of premium development strings
         readarray -t QUOTES << 'EOF'
         "Simplicity is the soul of efficiency." — Austin Freeman
         "Before software can be reusable it first has to be usable." — Ralph Johnson
         "There are two ways to write error-free programs; only the third one works." — Alan J. Perlis
         "It is not just what it looks like and feels like. Design is how it works." — Steve Jobs
         "The best error message is the one that never shows up." — Thomas Fuchs
-        "The computer was born to solve problems that did not exist before." — Bill Gates
         "Make it work, make it right, make it fast." — Kent Beck
-        "Software undergoes beta testing shortly before it's allowed to ruin your day." — Unknown
         "Talk is cheap. Show me the code." — Linus Torvalds
-        "Programs must be written for people to read, and only incidentally for machines to execute." — Abelson & Sussman
-        "Digital design is like painting, except the paint never dries." — Neville Brody
         "Computers are good at following instructions, but not at reading your mind." — Donald Knuth
         EOF
         
-        # Shuffles the list items locally to pick exactly one random text entry instantly
         RANDOM_QUOTE=$(printf "%s\n" "${QUOTES[@]}" | shuf -n 1)
         
         echo "> $RANDOM_QUOTE" >> patch.txt
         echo "" >> patch.txt
         echo "---" >> patch.txt
         
-        # Append cleanly to your target documentation canvas
         cat patch.txt >> README.md
         rm patch.txt
 
     - name: Commit and Push changes
       run: |
-        git config --global user.name "bolambaoz"
-        git config --global user.email "p0bring0yam0t@gmail.com"
+        # Explicitly configures parameters before pushing
+        git config user.name "bolambaoz"
+        git config user.email "p0bring0yam0t@gmail.com"
         
         git add README.md
         
-        # Safe catch ensures git only commits if an actual difference exists
-        git diff-index --quiet HEAD || git commit -m "Feat: hourly documentation tracking synchronization loop"
+        # Forces absolute structural user-authorship alignment checks
+        git diff-index --quiet HEAD || git commit --author="bolambaoz <p0bring0yam0t@gmail.com>" -m "Feat: hourly data tracking synchronization engine updates"
         
         git push origin main
